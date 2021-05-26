@@ -28,32 +28,10 @@ public class Application implements CommandLineRunner {
 
 		// Example of flux that throws error when processing one of their elements.
 		List<String> names = List.of("Andrés Guzman", "Pedro Almodobar", "Alfonso Lopez", "Juan Salva", "pedro Sanchez");
-		Flux<User> flux = Flux.fromIterable(names)
+		Flux.fromIterable(names)
 				.map(name -> new User(name.split(" ")[0], name.split(" ")[1]))
-				.filter(u -> "Pedro".equalsIgnoreCase(u.getName()))
-				// Otra forma de filtar, con flatMap:
-				/*
-				.flatMap(u -> {
-					if ("Pedro".equalsIgnoreCase(u.getName())) {
-						return Mono.just(u);
-					} else {
-						return Mono.empty();
-					}
-				})
-				*/
-				.doOnNext(e -> {
-					if (e.getName().isEmpty()) {
-						throw new RuntimeException("Element is empty");
-					} else {
-						System.out.println(e);
-					}
-				});
-
-		flux.subscribe(e -> log.info("User: " + e),
-				// Handles error and interrupts flux processing:
-				error -> log.error("Error: empty name"),
-				// Executes wjhen flux is closed. Wont be invoked if there has been any error.
-				() -> log.info("Flux processing finished")
-		);
+				// Transform flux to list
+				.collectList()
+				.subscribe(e -> log.info("Items: " + e));
 	}
 }
