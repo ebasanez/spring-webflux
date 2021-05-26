@@ -1,14 +1,13 @@
 package es.bprojects.coures.webflux;
 
-import java.util.List;
-
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import es.bprojects.coures.webflux.domain.Comments;
 import es.bprojects.coures.webflux.domain.User;
+import es.bprojects.coures.webflux.domain.UserComments;
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
@@ -25,13 +24,36 @@ public class Application implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
+		exampleCombineZipWith();
+	}
 
-		// Example of flux that throws error when processing one of their elements.
-		List<String> names = List.of("Andrés Guzman", "Pedro Almodobar", "Alfonso Lopez", "Juan Salva", "pedro Sanchez");
-		Flux.fromIterable(names)
-				.map(name -> new User(name.split(" ")[0], name.split(" ")[1]))
-				// Transform flux to list
-				.collectList()
-				.subscribe(e -> log.info("Items: " + e));
+	private void exampleCombineMono() {
+		Mono<User> userMono = Mono.fromCallable(() -> new User("John", "Doe"));
+		Mono<Comments> commentsMono = Mono.fromCallable(() -> {
+			Comments comments = new Comments();
+			comments.addComment("Comment1");
+			comments.addComment("Comment2");
+			return comments;
+		});
+
+		// Combine both fluxes:
+		userMono.flatMap(u -> commentsMono.map(c -> new UserComments(u, c))).subscribe(
+				uc -> log.info(uc.toString())
+		);
+
+	}
+
+	private void exampleCombineZipWith() {
+		Mono<User> userMono = Mono.fromCallable(() -> new User("John", "Doe"));
+		Mono<Comments> commentsMono = Mono.fromCallable(() -> {
+			Comments comments = new Comments();
+			comments.addComment("Comment1");
+			comments.addComment("Comment2");
+			return comments;
+		});
+
+		// Combine both fluxes:
+		Mono<UserComments> userWithCommentsMono = userMono.zipWith(commentsMono, (u, c) -> new UserComments(u, c));
+		userWithCommentsMono.subscribe(uc -> log.info(uc.toString()));
 	}
 }
