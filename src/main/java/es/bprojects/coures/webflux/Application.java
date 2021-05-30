@@ -209,7 +209,10 @@ public class Application implements CommandLineRunner {
 
 		Flux.range(1, 10)
 				.log()
-				.subscribe(new Subscriber<Integer>() {
+				.limitRate(3)
+				.subscribe(
+					/*
+						new Subscriber<Integer>() {
 
 					private Subscription subscription;
 					private final int limit = 3;
@@ -241,6 +244,8 @@ public class Application implements CommandLineRunner {
 					public void onComplete() {
 
 					}
-				});
+				}
+				*/);
+
 	}
 }
