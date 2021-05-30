@@ -1,8 +1,12 @@
 package es.bprojects.coures.webflux;
 
 import java.time.Duration;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.CountDownLatch;
 
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,6 +14,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import es.bprojects.coures.webflux.domain.Comments;
 import es.bprojects.coures.webflux.domain.User;
 import es.bprojects.coures.webflux.domain.UserComments;
+import io.netty.channel.unix.Limits;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -29,7 +34,7 @@ public class Application implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		log.info("Start main");
-		exampleInfiniteIntervalAndErrorWithRetry();
+		exampleBackPressure();
 		log.info("End main");
 	}
 
@@ -154,4 +159,88 @@ public class Application implements CommandLineRunner {
 		latch.await();
 	}
 
+	private static void exampleIntervalFromCreate() {
+		Flux.create(emitter -> {
+			Timer timer = new Timer();
+			timer.schedule(new TimerTask() {
+				private Integer counter = 0;
+
+				@Override
+				// Rises counter and emit incremented value.
+				public void run() {
+					emitter.next(++counter);
+					// At 10th iteration, finish timer and emmiter.
+					if (counter >= 10) {
+						timer.cancel();
+						emitter.complete();
+					}
+				}
+			}, 1000, 1000);
+		})
+				.doOnComplete(() -> log.info("Finished!"))
+				.subscribe(e -> log.info(e.toString()));
+
+	}
+
+	private static void exampleIntervalFromCreateWithError() {
+		Flux.create(emitter -> {
+			Timer timer = new Timer();
+			timer.schedule(new TimerTask() {
+				private Integer counter = 0;
+
+				@Override
+				// Rises counter and emit incremented value.
+				public void run() {
+					emitter.next(++counter);
+					// At 5th iteration, finish timer and flux emits an error.
+					if (counter >= 5) {
+						timer.cancel();
+						emitter.error(new InterruptedException("Error, flux stopped at 5"));
+					}
+				}
+			}, 1000, 1000);
+		})
+				.doOnComplete(() -> log.info("Finished!"))
+				.subscribe(e -> log.info(e.toString()));
+
+	}
+
+	public static void exampleBackPressure() {
+
+		Flux.range(1, 10)
+				.log()
+				.subscribe(new Subscriber<Integer>() {
+
+					private Subscription subscription;
+					private final int limit = 3;
+					private int consumed = 0;
+
+					@Override
+					public void onSubscribe(Subscription subscription) {
+						this.subscription = subscription;
+						subscription.request(limit); // We ask publisher (flux) to send a number of elements.
+					}
+
+					@Override
+					public void onNext(Integer integer) {
+						log.info(integer.toString());
+						consumed++;
+						// If we have already processed [limit] elements, we ask for [limit] more elements
+						if (consumed == limit ){
+							subscription.request(limit);
+							consumed = 0;
+						}
+					}
+
+					@Override
+					public void onError(Throwable throwable) {
+
+					}
+
+					@Override
+					public void onComplete() {
+
+					}
+				});
+	}
 }
