@@ -1,4 +1,4 @@
-package es.bprojects.coures.webflux.dto;
+package es.bprojects.coures.webflux.domain;
 
 import java.util.Date;
 
@@ -15,7 +15,7 @@ import lombok.ToString;
 @Builder
 @ToString
 @EqualsAndHashCode
-public class ProductDto {
+public class Product {
 
 	private final String id;
 	private final String name;

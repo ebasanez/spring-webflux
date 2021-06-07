@@ -1,6 +1,5 @@
-package es.bprojects.coures.webflux.model;
+package es.bprojects.coures.webflux.infrastructure.persistence.model;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 import org.springframework.data.annotation.Id;

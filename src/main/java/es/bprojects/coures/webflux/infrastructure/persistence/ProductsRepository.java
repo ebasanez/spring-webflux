@@ -1,8 +1,8 @@
-package es.bprojects.coures.webflux.persistence;
+package es.bprojects.coures.webflux.infrastructure.persistence;
 
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 
-import es.bprojects.coures.webflux.model.Product;
+import es.bprojects.coures.webflux.infrastructure.persistence.model.Product;
 
 /**
  * @author ebasanez

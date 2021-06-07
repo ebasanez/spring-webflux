@@ -1,26 +1,17 @@
 package es.bprojects.coures.webflux;
 
-import java.time.Duration;
 import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.CountDownLatch;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 
-import es.bprojects.coures.webflux.domain.Comments;
-import es.bprojects.coures.webflux.domain.User;
-import es.bprojects.coures.webflux.domain.UserComments;
-import es.bprojects.coures.webflux.model.Product;
-import es.bprojects.coures.webflux.persistence.ProductsRepository;
+import es.bprojects.coures.webflux.infrastructure.persistence.ProductsRepository;
+import es.bprojects.coures.webflux.infrastructure.persistence.model.Product;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 /**
  * @author ebasanez
