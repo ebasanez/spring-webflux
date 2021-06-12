@@ -10,12 +10,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.thymeleaf.spring5.context.webflux.ReactiveDataDriverContextVariable;
 
 import es.bprojects.coures.webflux.application.ProductService;
+import es.bprojects.coures.webflux.domain.Category;
 import es.bprojects.coures.webflux.domain.Product;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -92,7 +94,7 @@ public class ProductController {
 			model.addAttribute("product", product);
 			return Mono.just("form");
 		}
-		Product productBean = Product.builder().name(product.name).price(product.price).build();
+		Product productBean = Product.builder().name(product.name).price(product.price).category(product.category).build();
 		return productsService.insert(productBean).doOnNext(p -> {
 			log.info("Product {} inserted", product.getName());
 		}).thenReturn("redirect:/product");
@@ -104,6 +106,7 @@ public class ProductController {
 				.id(id)
 				.name(inputDto.name)
 				.price(inputDto.price)
+				.category(inputDto.category)
 				.build();
 		return productsService.update(product)
 				.doOnNext(p -> log.info("Product {} inserted", product.getName()))
@@ -115,11 +118,15 @@ public class ProductController {
 		return productsService.findById(id)
 				.switchIfEmpty(Mono.error(new InterruptedException("Product id does not exist")))
 				.map(Product::getId)
-				.flatMap(productsService::delete)
+				.flatMap(productsService::deleteProduct)
 				.then(Mono.just("redirect:/product?message=product-deleted"))
 				.onErrorResume(ex -> Mono.just("redirect:/product?message=product-id-does-not-exist"));
 	}
 
+	@ModelAttribute("categories")
+	Flux<Category> getCategories(){
+		return productsService.findAllCategories();
+	}
 
 	@Getter
 	@Setter
@@ -132,6 +139,9 @@ public class ProductController {
 		@Min(0)
 		@NotNull
 		private Float price;
+		@NotNull
+		private String category;
+
 	}
 
 	private ProductDto toDto(Product bean) {
@@ -139,6 +149,7 @@ public class ProductController {
 		dto.setId(bean.getId());
 		dto.setName(bean.getName());
 		dto.setPrice(bean.getPrice());
+		dto.setCategory(bean.getCategory());
 		return dto;
 	}
 

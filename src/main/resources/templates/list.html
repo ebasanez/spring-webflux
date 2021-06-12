@@ -15,6 +15,7 @@
         <th>name</th>
         <th>price</th>
         <th>created at</th>
+        <th>Category</th>
         <th></th>
         <th></th>
     </tr>
@@ -24,6 +25,7 @@
         <td th:text="${product.name}">name</td>
         <td th:text="${product.price}">price</td>
         <td th:text="${product.createdAt}">createdAt</td>
+        <td th:each="category: ${categories}" th:text="${category.name}" th:if="${product.category == category.id}"></td>
         <td><a th:href="@{/product/form/}+${product.id}">edit</a></td>
         <td><form method="post" th:action="@{/product/delete/}+${product.id}"><input type="submit" value="DELETE"/></form></td>
     </tr>

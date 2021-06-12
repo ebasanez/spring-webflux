@@ -1,7 +1,5 @@
 package es.bprojects.coures.webflux.infrastructure.persistence.model;
 
-import java.util.Date;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -13,35 +11,22 @@ import lombok.ToString;
 
 /**
  * @author ebasanez
- * @since 2021-05-30
+ * @since 2021-06-07
  */
 @Getter
 @Setter
 @ToString
 @EqualsAndHashCode
 @NoArgsConstructor
-@Document(collection = "product")
-public class Product {
-
-	public Product(String name, Float price) {
-		this.name = name;
-		this.price = price;
-	}
-
-	public Product(String name, Float price, Category category) {
-		this(name,price);
-		this.category = category;
-	}
+@Document("category")
+public class Category {
 
 	@Id
 	private String id;
-
 	private String name;
 
-	private Float price;
-
-	private Date createdAt;
-
-	private Category category;
+	public Category(String name) {
+		this.name = name;
+	}
 
 }

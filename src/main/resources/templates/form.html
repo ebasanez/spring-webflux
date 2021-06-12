@@ -19,6 +19,16 @@
             <div><input id="price" name="price" type="number" th:field="*{price}"></div>
             <small  th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></small>
         </div>
+        <div>
+            <label for="category">Category</label>
+            <div>
+                <select id="category" th:field="*{category}">
+                    <option value="">-- select --</option>
+                    <option th:each="category: ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+                </select>
+                <small th:if="${#fields.hasErrors('category')}" th:errors="*{category}"></small>
+            </div>
+        </div>
         <input type="submit" value="Create"/>
     </form>
 </div>

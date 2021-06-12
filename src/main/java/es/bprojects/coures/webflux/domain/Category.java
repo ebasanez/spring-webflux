@@ -15,12 +15,9 @@ import lombok.ToString;
 @Builder
 @ToString
 @EqualsAndHashCode
-public class Product {
+public class Category {
 
 	private final String id;
 	private final String name;
-	private final float price;
-	private final Date createdAt;
-	private final String category;
 
 }
