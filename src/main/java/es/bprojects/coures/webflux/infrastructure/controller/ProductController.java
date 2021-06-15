@@ -1,11 +1,20 @@
 package es.bprojects.coures.webflux.infrastructure.controller;
 
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.core.io.FileUrlResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,11 +23,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.thymeleaf.spring5.context.webflux.ReactiveDataDriverContextVariable;
 
 import es.bprojects.coures.webflux.application.ProductService;
 import es.bprojects.coures.webflux.domain.Category;
 import es.bprojects.coures.webflux.domain.Product;
+import es.bprojects.coures.webflux.infrastructure.utils.FileProperties;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +50,7 @@ import reactor.core.publisher.Mono;
 public class ProductController {
 
 	private final ProductService productsService;
+	private final FileProperties fileProperties;
 
 	@GetMapping
 	public Mono<String> list(Model model) {
@@ -88,28 +100,28 @@ public class ProductController {
 	}
 
 	@PostMapping("/form")
-	public Mono<String> insert(@Valid ProductDto product, BindingResult bindingResult, Model model) {
+	public Mono<String> insert(@Valid ProductDto product, BindingResult bindingResult, Model model, @RequestPart FilePart file) {
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("title", "Errors on title form");
 			model.addAttribute("product", product);
 			return Mono.just("form");
 		}
-		Product productBean = Product.builder().name(product.name).price(product.price).category(product.category).build();
-		return productsService.insert(productBean).doOnNext(p -> {
-			log.info("Product {} inserted", product.getName());
-		}).thenReturn("redirect:/product");
+		Product productBean = Product.builder().name(product.name).price(product.price).category(product.category).photo(product.photo).build();
+		return productsService.insert(productBean, file)
+				.doAfterTerminate(() -> log.info("Product {} inserted", product.getName()))
+				.thenReturn("redirect:/product");
 	}
 
 	@PostMapping("/form/{id}")
-	public Mono<String> update(@PathVariable String id, ProductDto inputDto) {
+	public Mono<String> update(@PathVariable String id, ProductDto inputDto, FilePart file) {
 		Product product = Product.builder()
 				.id(id)
 				.name(inputDto.name)
 				.price(inputDto.price)
 				.category(inputDto.category)
 				.build();
-		return productsService.update(product)
-				.doOnNext(p -> log.info("Product {} inserted", product.getName()))
+		return productsService.update(product, file)
+				.doAfterTerminate(() -> log.info("Product {} updated", product.getName()))
 				.thenReturn("redirect:/product");
 	}
 
@@ -123,8 +135,32 @@ public class ProductController {
 				.onErrorResume(ex -> Mono.just("redirect:/product?message=product-id-does-not-exist"));
 	}
 
+	@GetMapping("/{id}")
+	public Mono<String> get(Model model, @PathVariable String id) {
+		return productsService.findById(id).doOnNext(p -> {
+			model.addAttribute("title", "Product detail");
+			model.addAttribute("product", toDto(p));
+		}).switchIfEmpty(Mono.error(new InterruptedException("Product does not exists")))
+				.then(Mono.just("detail"))
+				.onErrorResume(ex -> Mono.just("redirect:?error=product+doe+not+exists"));
+	}
+
+	@GetMapping("/img/{photoName:.+}")
+	public Mono<ResponseEntity<Resource>> getPhoto(@PathVariable String photoName) throws MalformedURLException {
+		Path path  = Paths.get(fileProperties.getUploadFileDestination()).resolve(photoName).toAbsolutePath();
+
+			Resource image = new UrlResource(path.toUri());
+			return Mono.just(ResponseEntity
+					.ok()
+					.header(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=\""+image.getFilename()+"\"")
+					.body(image)
+		);
+
+	}
+
+
 	@ModelAttribute("categories")
-	Flux<Category> getCategories(){
+	Flux<Category> getCategories() {
 		return productsService.findAllCategories();
 	}
 
@@ -141,7 +177,7 @@ public class ProductController {
 		private Float price;
 		@NotNull
 		private String category;
-
+		private String photo;
 	}
 
 	private ProductDto toDto(Product bean) {
@@ -150,6 +186,7 @@ public class ProductController {
 		dto.setName(bean.getName());
 		dto.setPrice(bean.getPrice());
 		dto.setCategory(bean.getCategory());
+		dto.setPhoto(bean.getPhoto());
 		return dto;
 	}
 

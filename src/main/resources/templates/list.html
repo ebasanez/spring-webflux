@@ -21,7 +21,7 @@
     </tr>
     </thead>
     <tr th:each="product: ${products}">
-        <td th:text="${product.id}">id</td>
+        <td><a th:href="@{/product/}+${product.id}" th:text="${#strings.abbreviate(product.id,10)}">id</a></td>
         <td th:text="${product.name}">name</td>
         <td th:text="${product.price}">price</td>
         <td th:text="${product.createdAt}">createdAt</td>

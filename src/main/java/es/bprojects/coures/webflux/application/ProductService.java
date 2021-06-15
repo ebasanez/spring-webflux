@@ -3,6 +3,8 @@ package es.bprojects.coures.webflux.application;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.http.codec.multipart.FilePart;
+
 import es.bprojects.coures.webflux.domain.Category;
 import es.bprojects.coures.webflux.domain.Product;
 import reactor.core.publisher.Flux;
@@ -21,9 +23,12 @@ public interface ProductService {
 
 	Mono<Product> findById(String id);
 
-	Mono<Product> insert(Product product);
+	Mono<Void> insert(
+			@NotNull Product product,
+			FilePart file);
 
-	Mono<Product> update(Product product);
+	Mono<Void> update(Product product,
+			FilePart file);
 
 	Mono<Void> deleteProduct(String id);
 	/*

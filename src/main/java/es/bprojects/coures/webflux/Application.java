@@ -5,6 +5,7 @@ import java.util.Date;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.core.ReactiveAdapterRegistry;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 
 import es.bprojects.coures.webflux.infrastructure.persistence.CategoryRepository;
@@ -13,6 +14,7 @@ import es.bprojects.coures.webflux.infrastructure.persistence.model.Category;
 import es.bprojects.coures.webflux.infrastructure.persistence.model.Product;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import reactor.blockhound.BlockHound;
 import reactor.core.publisher.Flux;
 
 /**
@@ -29,6 +31,8 @@ public class Application implements CommandLineRunner {
 	private final ReactiveMongoTemplate mongoTemplate;
 
 	public static void main(String[] args) {
+		// Blockhound throws exception with non rest endpoints, as template resolve is blocking (access file)
+		// BlockHound.install();
 		SpringApplication.run(Application.class, args);
 	}
 

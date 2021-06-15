@@ -44,4 +44,6 @@ public class Product {
 
 	private Category category;
 
+	private String photo;
+
 }
