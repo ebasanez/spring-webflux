@@ -36,13 +36,13 @@ public class Product {
 	@Id
 	private String id;
 
+	private Category category;
+
 	private String name;
 
 	private Float price;
 
 	private Date createdAt;
-
-	private Category category;
 
 	private String photo;
 

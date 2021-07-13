@@ -2,8 +2,6 @@ package es.bprojects.coures.webflux.domain;
 
 import java.util.Date;
 
-import org.springframework.http.codec.multipart.FilePart;
-
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

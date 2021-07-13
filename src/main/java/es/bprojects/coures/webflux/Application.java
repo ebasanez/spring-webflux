@@ -5,7 +5,6 @@ import java.util.Date;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.core.ReactiveAdapterRegistry;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 
 import es.bprojects.coures.webflux.infrastructure.persistence.CategoryRepository;
@@ -32,7 +31,7 @@ public class Application implements CommandLineRunner {
 
 	public static void main(String[] args) {
 		// Blockhound throws exception with non rest endpoints, as template resolve is blocking (access file)
-		// BlockHound.install();
+		BlockHound.install();
 		SpringApplication.run(Application.class, args);
 	}
 
@@ -71,9 +70,9 @@ public class Application implements CommandLineRunner {
 						)
 				)
 				.flatMap(p -> {
-			p.setCreatedAt(new Date());
-			return productsRepository.save(p);
-		})
+					p.setCreatedAt(new Date());
+					return productsRepository.save(p);
+				})
 				.subscribe(p -> log.info(p.toString()));
 
 	}

@@ -45,21 +45,20 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public Mono<Void> insert(Product product, FilePart photo) {
+	public Mono<Product> insert(Product product, FilePart photo) {
 		String photoFileName = generateFileName(photo);
 		return toEntity(product, photoFileName)
 				.flatMap(productsRepository::save)
 				.flatMap(p -> {
 					if (photoFileName != null) {
-						return photo.transferTo(new File(fileProperties.getUploadFileDestination() + photoFileName));
-					} else {
-						return Mono.empty();
+						photo.transferTo(new File(fileProperties.getUploadFileDestination() + photoFileName));
 					}
+					return Mono.just(toDomain(p));
 				});
 	}
 
 	@Override
-	public Mono<Void> update(Product product, FilePart file) {
+	public Mono<Product> update(Product product, FilePart file) {
 		String fileName = generateFileName(file);
 		return productsRepository.findById(product.getId())
 				.flatMap(p ->
@@ -76,10 +75,9 @@ public class ProductServiceImpl implements ProductService {
 				.flatMap(productsRepository::save)
 				.flatMap(p -> {
 					if (fileName != null) {
-						return file.transferTo(new File(fileProperties.getUploadFileDestination() + fileName));
-					} else {
-						return Mono.empty();
+						file.transferTo(new File(fileProperties.getUploadFileDestination() + fileName));
 					}
+					return Mono.just(toDomain(p));
 				});
 	}
 

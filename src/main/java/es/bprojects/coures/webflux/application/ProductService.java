@@ -23,11 +23,11 @@ public interface ProductService {
 
 	Mono<Product> findById(String id);
 
-	Mono<Void> insert(
+	Mono<Product> insert(
 			@NotNull Product product,
 			FilePart file);
 
-	Mono<Void> update(Product product,
+	Mono<Product> update(Product product,
 			FilePart file);
 
 	Mono<Void> deleteProduct(String id);
