@@ -5,6 +5,7 @@ import java.net.URI;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -82,6 +83,19 @@ public class ProductHandler {
 		return productService.findById(id).map(Product::getId)
 				.flatMap(p -> productService.deleteProduct(p)
 						.then(ServerResponse.noContent().build()))
+				.switchIfEmpty(ServerResponse.notFound().build());
+	}
+
+	public Mono<ServerResponse> upload(ServerRequest serverRequest) {
+		final String id = serverRequest.pathVariable("id");
+		return serverRequest.multipartData()
+				.map(m ->
+						m.toSingleValueMap().get("file"))
+				.cast(FilePart.class)
+				.flatMap(file ->
+						productService.findById(id).flatMap(p ->
+								productService.update(p, file)))
+				.flatMap(p -> ServerResponse.ok().bodyValue(p))
 				.switchIfEmpty(ServerResponse.notFound().build());
 	}
 
