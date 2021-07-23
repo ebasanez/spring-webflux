@@ -3,11 +3,8 @@ package es.bprojects.coures.webflux.infrastructure.controller;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,12 +24,7 @@ import org.springframework.web.bind.support.WebExchangeBindException;
 import es.bprojects.coures.webflux.application.ProductService;
 import es.bprojects.coures.webflux.domain.Product;
 import es.bprojects.coures.webflux.infrastructure.controller.dto.ProductDto;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

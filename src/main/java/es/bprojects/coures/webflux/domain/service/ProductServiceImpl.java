@@ -54,7 +54,7 @@ public class ProductServiceImpl implements ProductService {
 						photo.transferTo(new File(fileProperties.getUploadFileDestination() + photoFileName));
 					}
 					return Mono.just(toDomain(p));
-				});
+				}).switchIfEmpty(Mono.error(new Exception("Error saving product")));
 	}
 
 	@Override

@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.blockhound.BlockHound;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Hooks;
+import reactor.tools.agent.ReactorDebugAgent;
 
 /**
  * @author ebasanez
@@ -44,6 +46,9 @@ public class Application implements CommandLineRunner {
 	}
 
 	private void insertProducts() {
+
+		// To enable improved log traces:
+		// Hooks.onOperatorDebug();
 
 		Category electronics = new Category("electronics");
 		Category sports = new Category("sports");

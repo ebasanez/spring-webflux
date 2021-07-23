@@ -32,6 +32,7 @@ public class RouterFunctionConfiguration {
 				.andRoute(PUT("/api/v2/products/{id}"), productHandler::update)
 				.andRoute(DELETE("/api/v2/products/{id}"),productHandler::delete)
 				.andRoute(PUT("/api/v2/products/{id}/photo"), productHandler::upload)
+				.andRoute(POST("/api/v2/products/photo"), productHandler::createWithPhoto)
 				;
 	}
 
