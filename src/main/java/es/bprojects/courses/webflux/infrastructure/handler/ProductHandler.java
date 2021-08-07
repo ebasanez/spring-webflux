@@ -1,12 +1,9 @@
-package es.bprojects.coures.webflux.infrastructure.handler;
+package es.bprojects.courses.webflux.infrastructure.handler;
 
 import java.net.URI;
-import java.time.Duration;
 import java.util.Map;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.codec.multipart.FormFieldPart;
 import org.springframework.http.codec.multipart.Part;
@@ -17,9 +14,9 @@ import org.springframework.validation.Validator;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import es.bprojects.coures.webflux.application.ProductService;
-import es.bprojects.coures.webflux.domain.Product;
-import es.bprojects.coures.webflux.infrastructure.controller.dto.ProductDto;
+import es.bprojects.courses.webflux.application.ProductService;
+import es.bprojects.courses.webflux.domain.Product;
+import es.bprojects.courses.webflux.infrastructure.controller.dto.ProductDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;

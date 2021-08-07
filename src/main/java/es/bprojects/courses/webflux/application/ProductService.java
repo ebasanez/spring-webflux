@@ -1,12 +1,12 @@
-package es.bprojects.coures.webflux.application;
+package es.bprojects.courses.webflux.application;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.http.codec.multipart.FilePart;
 
-import es.bprojects.coures.webflux.domain.Category;
-import es.bprojects.coures.webflux.domain.Product;
+import es.bprojects.courses.webflux.domain.Category;
+import es.bprojects.courses.webflux.domain.Product;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -21,16 +21,22 @@ public interface ProductService {
 	 */
 	Flux<Product> findAll();
 
-	Mono<Product> findById(String id);
+	Mono<Product> findById(
+			@NotNull String id);
+
+	Mono<Product> findByName(
+			@NotNull String name);
 
 	Mono<Product> insert(
 			@NotNull Product product,
 			FilePart file);
 
-	Mono<Product> update(Product product,
+	Mono<Product> update(
+			@NotNull Product product,
 			FilePart file);
 
-	Mono<Void> deleteProduct(String id);
+	Mono<Void> deleteProduct(
+			@NotNull String id);
 	/*
 	Category methods
 	 */
@@ -38,6 +44,8 @@ public interface ProductService {
 	Flux<Category> findAllCategories();
 
 	Mono<Category> findCategoryById(@NotNull String id);
+
+	Mono<Category> findCategoryByName(@NotNull String name);
 
 	Mono<Category> insert(@NotNull @Valid Category product);
 

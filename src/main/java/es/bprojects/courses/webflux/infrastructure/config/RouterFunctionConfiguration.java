@@ -1,4 +1,4 @@
-package es.bprojects.coures.webflux.infrastructure.config;
+package es.bprojects.courses.webflux.infrastructure.config;
 
 import static org.springframework.web.reactive.function.server.RequestPredicates.DELETE;
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import es.bprojects.coures.webflux.infrastructure.handler.ProductHandler;
+import es.bprojects.courses.webflux.infrastructure.handler.ProductHandler;
 
 /**
  * @author ebasanez

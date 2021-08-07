@@ -1,4 +1,4 @@
-package es.bprojects.coures.webflux.domain.service;
+package es.bprojects.courses.webflux.domain.service;
 
 import java.io.File;
 import java.util.Date;
@@ -11,12 +11,12 @@ import javax.validation.constraints.NotNull;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 
-import es.bprojects.coures.webflux.application.ProductService;
-import es.bprojects.coures.webflux.domain.Category;
-import es.bprojects.coures.webflux.domain.Product;
-import es.bprojects.coures.webflux.infrastructure.persistence.CategoryRepository;
-import es.bprojects.coures.webflux.infrastructure.persistence.ProductsRepository;
-import es.bprojects.coures.webflux.infrastructure.utils.FileProperties;
+import es.bprojects.courses.webflux.application.ProductService;
+import es.bprojects.courses.webflux.domain.Category;
+import es.bprojects.courses.webflux.domain.Product;
+import es.bprojects.courses.webflux.infrastructure.persistence.CategoryRepository;
+import es.bprojects.courses.webflux.infrastructure.persistence.ProductsRepository;
+import es.bprojects.courses.webflux.infrastructure.utils.FileProperties;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -42,6 +42,11 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public Mono<Product> findById(String id) {
 		return productsRepository.findById(id).map(this::toDomain);
+	}
+
+	@Override
+	public Mono<Product> findByName(String name) {
+		return productsRepository.findByName(name).map(this::toDomain);
 	}
 
 	@Override
@@ -100,19 +105,24 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
+	public Mono<Category> findCategoryByName(@NotNull String name) {
+		return categoryRepository.findByName(name).map(this::toDomain);
+	}
+
+	@Override
 	public Mono<Category> insert(@NotNull @Valid Category category) {
-		es.bprojects.coures.webflux.infrastructure.persistence.model.Category entity =
-				new es.bprojects.coures.webflux.infrastructure.persistence.model.Category();
+		es.bprojects.courses.webflux.infrastructure.persistence.model.Category entity =
+				new es.bprojects.courses.webflux.infrastructure.persistence.model.Category();
 		toEntity(entity, category);
 		return categoryRepository.save(entity).map(this::toDomain);
 	}
 
-	private final Mono<es.bprojects.coures.webflux.infrastructure.persistence.model.Product> toEntity(Product domain, String photoFileName) {
+	private final Mono<es.bprojects.courses.webflux.infrastructure.persistence.model.Product> toEntity(Product domain, String photoFileName) {
 
 		return categoryRepository.findById(domain.getCategory())
 				.map(c -> {
-					es.bprojects.coures.webflux.infrastructure.persistence.model.Product p =
-							new es.bprojects.coures.webflux.infrastructure.persistence.model.Product();
+					es.bprojects.courses.webflux.infrastructure.persistence.model.Product p =
+							new es.bprojects.courses.webflux.infrastructure.persistence.model.Product();
 					p.setName(domain.getName());
 					p.setPrice(domain.getPrice());
 					p.setPhoto(photoFileName);
@@ -122,7 +132,7 @@ public class ProductServiceImpl implements ProductService {
 				});
 	}
 
-	private final Product toDomain(es.bprojects.coures.webflux.infrastructure.persistence.model.Product entity) {
+	private final Product toDomain(es.bprojects.courses.webflux.infrastructure.persistence.model.Product entity) {
 		return Product.builder()
 				.id(entity.getId())
 				.name(entity.getName().toUpperCase(Locale.ROOT))
@@ -133,15 +143,15 @@ public class ProductServiceImpl implements ProductService {
 				.build();
 	}
 
-	private final Category toDomain(es.bprojects.coures.webflux.infrastructure.persistence.model.Category entity) {
+	private final Category toDomain(es.bprojects.courses.webflux.infrastructure.persistence.model.Category entity) {
 		return Category.builder()
 				.id(entity.getId())
 				.name(entity.getName().toUpperCase(Locale.ROOT))
 				.build();
 	}
 
-	private final es.bprojects.coures.webflux.infrastructure.persistence.model.Category toEntity(
-			es.bprojects.coures.webflux.infrastructure.persistence.model.Category entity, Category domain) {
+	private final es.bprojects.courses.webflux.infrastructure.persistence.model.Category toEntity(
+			es.bprojects.courses.webflux.infrastructure.persistence.model.Category entity, Category domain) {
 		entity.setName(domain.getName());
 		return entity;
 	}

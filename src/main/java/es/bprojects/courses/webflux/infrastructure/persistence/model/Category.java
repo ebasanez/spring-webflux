@@ -1,4 +1,4 @@
-package es.bprojects.coures.webflux.infrastructure.persistence.model;
+package es.bprojects.courses.webflux.infrastructure.persistence.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;

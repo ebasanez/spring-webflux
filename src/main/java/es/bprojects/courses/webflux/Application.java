@@ -1,4 +1,4 @@
-package es.bprojects.coures.webflux;
+package es.bprojects.courses.webflux;
 
 import java.util.Date;
 
@@ -7,16 +7,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 
-import es.bprojects.coures.webflux.infrastructure.persistence.CategoryRepository;
-import es.bprojects.coures.webflux.infrastructure.persistence.ProductsRepository;
-import es.bprojects.coures.webflux.infrastructure.persistence.model.Category;
-import es.bprojects.coures.webflux.infrastructure.persistence.model.Product;
+import es.bprojects.courses.webflux.infrastructure.persistence.CategoryRepository;
+import es.bprojects.courses.webflux.infrastructure.persistence.ProductsRepository;
+import es.bprojects.courses.webflux.infrastructure.persistence.model.Category;
+import es.bprojects.courses.webflux.infrastructure.persistence.model.Product;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.blockhound.BlockHound;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Hooks;
-import reactor.tools.agent.ReactorDebugAgent;
 
 /**
  * @author ebasanez
@@ -32,8 +30,10 @@ public class Application implements CommandLineRunner {
 	private final ReactiveMongoTemplate mongoTemplate;
 
 	public static void main(String[] args) {
-		// Blockhound throws exception with non rest endpoints, as template resolve is blocking (access file)
-		BlockHound.install();
+		// Blockhound throws exception with thymeleaf, as template resolve is blocking (access file), so additional configuration is needed:
+		BlockHound.builder()
+				.allowBlockingCallsInside("org.thymeleaf.util.ClassLoaderUtils", "loadResourceAsStream")
+				.install();
 		SpringApplication.run(Application.class, args);
 	}
 

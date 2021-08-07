@@ -1,4 +1,4 @@
-package es.bprojects.coures.webflux.domain;
+package es.bprojects.courses.webflux.domain;
 
 import java.util.Date;
 

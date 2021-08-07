@@ -1,4 +1,4 @@
-package es.bprojects.coures.webflux.infrastructure.controller;
+package es.bprojects.courses.webflux.infrastructure.controller;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -21,9 +21,9 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.support.WebExchangeBindException;
 
-import es.bprojects.coures.webflux.application.ProductService;
-import es.bprojects.coures.webflux.domain.Product;
-import es.bprojects.coures.webflux.infrastructure.controller.dto.ProductDto;
+import es.bprojects.courses.webflux.application.ProductService;
+import es.bprojects.courses.webflux.domain.Product;
+import es.bprojects.courses.webflux.infrastructure.controller.dto.ProductDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;

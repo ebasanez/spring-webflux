@@ -1,4 +1,4 @@
-package es.bprojects.coures.webflux.infrastructure.controller.dto;
+package es.bprojects.courses.webflux.infrastructure.controller.dto;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;

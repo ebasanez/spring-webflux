@@ -1,4 +1,4 @@
-package es.bprojects.coures.webflux.infrastructure.persistence.model;
+package es.bprojects.courses.webflux.infrastructure.persistence.model;
 
 import java.util.Date;
 

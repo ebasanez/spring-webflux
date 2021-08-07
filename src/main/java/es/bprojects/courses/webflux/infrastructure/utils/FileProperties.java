@@ -1,4 +1,4 @@
-package es.bprojects.coures.webflux.infrastructure.utils;
+package es.bprojects.courses.webflux.infrastructure.utils;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
