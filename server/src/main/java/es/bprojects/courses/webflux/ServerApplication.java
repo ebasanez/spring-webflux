@@ -23,7 +23,7 @@ import reactor.core.publisher.Flux;
 @Slf4j
 @SpringBootApplication
 @RequiredArgsConstructor
-public class Application implements CommandLineRunner {
+public class ServerApplication implements CommandLineRunner {
 
 	private final ProductsRepository productsRepository;
 	private final CategoryRepository categoryRepository;
@@ -34,7 +34,7 @@ public class Application implements CommandLineRunner {
 		BlockHound.builder()
 				.allowBlockingCallsInside("org.thymeleaf.util.ClassLoaderUtils", "loadResourceAsStream")
 				.install();
-		SpringApplication.run(Application.class, args);
+		SpringApplication.run(ServerApplication.class, args);
 	}
 
 	@Override

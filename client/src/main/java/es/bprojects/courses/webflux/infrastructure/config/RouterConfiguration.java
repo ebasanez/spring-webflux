@@ -6,7 +6,7 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 import static org.springframework.web.reactive.function.server.RequestPredicates.PUT;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
@@ -16,23 +16,25 @@ import es.bprojects.courses.webflux.infrastructure.handler.ProductHandler;
 
 /**
  * @author ebasanez
- * @since 2021-07-13
+ * @since 2021-08-08
  */
 @Configuration
-public class RouterFunctionConfiguration {
+public class RouterConfiguration {
 
-	@Autowired
-	private ProductHandler productHandler;
+	@Value("${product.handler.baseUrl}")
+	private String baseUrl;
 
 	@Bean
-	public RouterFunction<ServerResponse> routes() {
-		return route(GET("/api/v2/products"), productHandler::list)
-				.andRoute(GET("/api/v2/products/{id}"), productHandler::get)
-				.andRoute(POST("/api/v2/products"), productHandler::create)
-				.andRoute(PUT("/api/v2/products/{id}"), productHandler::update)
-				.andRoute(DELETE("/api/v2/products/{id}"),productHandler::delete)
-				.andRoute(PUT("/api/v2/products/{id}/photo"), productHandler::upload)
-				.andRoute(POST("/api/v2/products/photo"), productHandler::createWithPhoto);
+	RouterFunction<ServerResponse> productRoutes(ProductHandler productHandler) {
+		return route(GET(baseUrl), r -> productHandler.list())
+				.andRoute(GET(baseUrl + "/{id}"), productHandler::get)
+				.andRoute(POST(baseUrl), productHandler::create)
+				.andRoute(PUT(baseUrl + "/{id}"), productHandler::update)
+				.andRoute(DELETE(baseUrl + "/{id}"), productHandler::delete)
+				.andRoute(PUT(baseUrl + "/{id}/photo"), productHandler::uploadPhoto)
+				.andRoute(POST(baseUrl + "/photo"), productHandler::createWithPhoto)
+				;
+
 	}
 
 }
