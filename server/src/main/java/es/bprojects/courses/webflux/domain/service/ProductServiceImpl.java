@@ -18,6 +18,7 @@ import es.bprojects.courses.webflux.infrastructure.persistence.CategoryRepositor
 import es.bprojects.courses.webflux.infrastructure.persistence.ProductsRepository;
 import es.bprojects.courses.webflux.infrastructure.utils.FileProperties;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -26,6 +27,7 @@ import reactor.core.publisher.Mono;
  * @since 2021-06-02
  */
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
@@ -67,16 +69,18 @@ public class ProductServiceImpl implements ProductService {
 		String fileName = generateFileName(file);
 		return productsRepository.findById(product.getId())
 				.flatMap(p ->
-						categoryRepository.findById(product.getCategory())
-								.map(c -> {
-											p.setName(product.getName());
-											p.setPrice(product.getPrice());
-											p.setPhoto(fileName);
-											p.setCategory(c);
-											return p;
-										}
-								)
-				)
+				{
+					log.info(p.toString());
+					return categoryRepository.findById(product.getCategory())
+							.map(c -> {
+										p.setName(product.getName());
+										p.setPrice(product.getPrice());
+										p.setPhoto(fileName);
+										p.setCategory(c);
+										return p;
+									}
+							).switchIfEmpty(Mono.error(new IllegalArgumentException("No category "+ product.getCategory())));
+				})
 				.flatMap(productsRepository::save)
 				.flatMap(p -> {
 					if (fileName != null) {

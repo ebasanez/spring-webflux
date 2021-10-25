@@ -4,12 +4,11 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.validation.Valid;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -61,7 +60,7 @@ public class ProductRestController {
 
 	@PostMapping
 	public Mono<ResponseEntity<Map<String, Object>>> create(
-			@Valid @RequestBody Mono<ProductDto> productDto) {
+			@Validated @RequestBody Mono<ProductDto> productDto) {
 		final Map<String, Object> response = new HashMap<>();
 		return productDto.flatMap(product ->
 				productService.insert(toDomain(product), null)

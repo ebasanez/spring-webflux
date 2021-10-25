@@ -1,5 +1,7 @@
 package es.bprojects.courses.webflux.infrastructure.controller.dto;
 
+import java.util.stream.IntStream;
+
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -26,4 +28,5 @@ public class ProductDto {
 	@NotNull(message = "category")
 	private String category;
 	private String photo;
+
 }

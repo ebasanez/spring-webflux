@@ -35,7 +35,8 @@ public class ProductServiceImpl implements ProductService {
 	public Flux<Product> findAll() {
 		return webClient.get()
 				.accept(APPLICATION_JSON)
-				.exchangeToFlux(r -> r.bodyToFlux(ProductClientDto.class))
+				.retrieve()
+				.bodyToFlux(ProductClientDto.class)
 				.map(this::toDomain);
 	}
 

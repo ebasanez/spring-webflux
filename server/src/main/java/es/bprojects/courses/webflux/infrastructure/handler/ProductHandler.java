@@ -68,7 +68,7 @@ public class ProductHandler {
 										.created(URI.create("/api/v2/products/" + pCreated.getId()))
 										.contentType(MediaType.APPLICATION_JSON)
 										.bodyValue(pCreated))
-								.onErrorResume(e->ServerResponse.badRequest().bodyValue(e.toString()));
+								.onErrorResume(e -> ServerResponse.badRequest().bodyValue(e.toString()));
 					}
 
 				});
@@ -92,8 +92,10 @@ public class ProductHandler {
 						ServerResponse
 								.ok()
 								.contentType(MediaType.APPLICATION_JSON)
-								.bodyValue(p));
-
+								.bodyValue(p)
+				)
+				.switchIfEmpty(ServerResponse.notFound().build())
+				.onErrorResume(e -> ServerResponse.badRequest().bodyValue(e.toString()));
 
 	}
 
