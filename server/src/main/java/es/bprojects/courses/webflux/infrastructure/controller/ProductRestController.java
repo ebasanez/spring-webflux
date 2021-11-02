@@ -72,7 +72,6 @@ public class ProductRestController {
 									.body(response);
 						})
 		).onErrorResume(WebExchangeBindException.class, t -> {
-			System.out.print("Error");
 			return Mono.just(t)
 					.cast(WebExchangeBindException.class)
 					.map(WebExchangeBindException::getFieldErrors)
@@ -80,7 +79,6 @@ public class ProductRestController {
 					.map(fieldError -> "Error in field " + fieldError.getField() + " " + fieldError.getDefaultMessage())
 					.collectList()
 					.map(list -> {
-								System.out.println(list);
 								response.put("errors", list);
 								return ResponseEntity.badRequest().body(response);
 							}

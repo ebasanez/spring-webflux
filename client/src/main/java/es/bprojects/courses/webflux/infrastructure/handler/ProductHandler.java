@@ -1,6 +1,5 @@
 package es.bprojects.courses.webflux.infrastructure.handler;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
@@ -53,16 +52,8 @@ public class ProductHandler {
 
 	public Mono<ServerResponse> get(ServerRequest request) {
 		final String id = request.pathVariable("id");
-		return productService.findById(id)
-				.flatMap(p -> ServerResponse.ok().bodyValue(p))
-				.onErrorResume(e -> {
-					WebClientResponseException errorResponse = (WebClientResponseException) e;
-					if (errorResponse.getStatusCode() == NOT_FOUND) {
-						return ServerResponse.notFound().build();
-					} else {
-						return Mono.error(errorResponse);
-					}
-				});
+		return handleError(productService.findById(id)
+				.flatMap(p -> ServerResponse.ok().bodyValue(p)));
 
 	}
 
@@ -82,23 +73,11 @@ public class ProductHandler {
 								.collectList()
 								.flatMap(errList -> ServerResponse.badRequest().bodyValue(errList));
 					} else {
-						return productService.insert(toDomain(p))
+						return handleError(productService.insert(toDomain(p))
 								.flatMap(pCreated -> ServerResponse
 										.created(URI.create(baseUrl + "/" + pCreated.getId()))
 										.contentType(APPLICATION_JSON)
-										.bodyValue(pCreated))
-// Error management
-								.onErrorResume(e -> {
-									WebClientResponseException errorResponse = (WebClientResponseException) e;
-									if (errorResponse.getStatusCode() == BAD_REQUEST) {
-										return ServerResponse
-												.badRequest()
-												.contentType(APPLICATION_JSON)
-												.bodyValue(e.toString());
-									} else {
-										return Mono.error(errorResponse);
-									}
-								});
+										.bodyValue(pCreated)));
 					}
 
 				});
@@ -117,49 +96,27 @@ public class ProductHandler {
 								.category(p.getCategory())
 								.build()
 				);
-		return product
+		return handleError(product
 				.flatMap(productService::update)
 				.flatMap(p ->
 						ServerResponse
 								.created(URI.create("/api/client".concat(id)))
 								.contentType(APPLICATION_JSON)
-								.bodyValue(p))
-				// Error management
-				.onErrorResume(e -> {
-					WebClientResponseException errorResponse = (WebClientResponseException) e;
-					if (errorResponse.getStatusCode() == NOT_FOUND) {
-						// Example of non empty 404 response
-						Map<String, Object> errorBody = new HashMap();
-						errorBody.put("error", "Product not found");
-						errorBody.put("timestamp", Instant.now());
-						return ServerResponse.status(NOT_FOUND).bodyValue(errorBody);
-					} else {
-						return Mono.error(errorResponse);
-					}
-				});
+								.bodyValue(p)));
 	}
 
 	public Mono<ServerResponse> delete(ServerRequest serverRequest) {
 		final String id = serverRequest.pathVariable("id");
-		return productService.findById(id)
+		return handleError(productService.findById(id)
 				.map(Product::getId)
 				.flatMap(productService::delete)
 				.then(ServerResponse.noContent().build())
-				.switchIfEmpty(ServerResponse.notFound().build())
-				// Error management
-				.onErrorResume(e -> {
-					WebClientResponseException errorResponse = (WebClientResponseException) e;
-					if (errorResponse.getStatusCode() == NOT_FOUND) {
-						return ServerResponse.notFound().build();
-					} else {
-						return Mono.error(errorResponse);
-					}
-				});
+				.switchIfEmpty(ServerResponse.notFound().build()));
 	}
 
 	public Mono<ServerResponse> uploadPhoto(ServerRequest serverRequest) {
 		final String id = serverRequest.pathVariable("id");
-		return serverRequest.multipartData()
+		return handleError(serverRequest.multipartData()
 				.map(m ->
 						m.toSingleValueMap().get("file"))
 				.cast(FilePart.class)
@@ -168,16 +125,7 @@ public class ProductHandler {
 				.flatMap(p -> ServerResponse.ok()
 						.contentType(APPLICATION_JSON)
 						.bodyValue(p))
-				.switchIfEmpty(ServerResponse.notFound().build())
-				// Error management
-				.onErrorResume(e -> {
-					WebClientResponseException errorResponse = (WebClientResponseException) e;
-					if (errorResponse.getStatusCode() == NOT_FOUND) {
-						return ServerResponse.notFound().build();
-					} else {
-						return Mono.error(errorResponse);
-					}
-				});
+				.switchIfEmpty(ServerResponse.notFound().build()));
 	}
 
 	public Mono<ServerResponse> createWithPhoto(ServerRequest request) {
@@ -193,7 +141,7 @@ public class ProductHandler {
 						}
 				);
 
-		return request
+		return handleError(request
 				.multipartData()
 				.map(multipart -> multipart.toSingleValueMap().get("file"))
 				.cast(FilePart.class)
@@ -201,7 +149,7 @@ public class ProductHandler {
 						.flatMap(p -> ServerResponse
 								.created(URI.create(baseUrl + "/" + p.getId()))
 								.contentType(APPLICATION_JSON)
-								.bodyValue(p)));
+								.bodyValue(p))));
 	}
 
 	private Product toDomain(ProductDto dto) {
@@ -211,6 +159,28 @@ public class ProductHandler {
 				.category(dto.getCategory())
 				.photo(dto.getPhoto())
 				.build();
+
 	}
 
+	private Mono<ServerResponse> handleError(Mono<ServerResponse> response) {
+		return response.onErrorResume(e -> {
+			WebClientResponseException errorResponse = (WebClientResponseException) e;
+			switch (errorResponse.getStatusCode()) {
+				case NOT_FOUND:
+					Map<String, Object> errorBody = new HashMap();
+					errorBody.put("error", "Product not found");
+					errorBody.put("timestamp", Instant.now());
+					return ServerResponse
+							.status(NOT_FOUND)
+							.bodyValue(errorBody);
+				case BAD_REQUEST:
+					return ServerResponse
+							.badRequest()
+							.contentType(APPLICATION_JSON)
+							.bodyValue(e.toString());
+				default:
+					return Mono.error(errorResponse);
+			}
+		});
+	}
 }
