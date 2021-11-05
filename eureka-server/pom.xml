@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>client</artifactId>
+    <artifactId>eureka-server</artifactId>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -17,9 +17,15 @@
     </properties>
 
     <dependencies>
+        <!--Necessary since jre > 8 (managed from Spring Boot) -->
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+            <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
         </dependency>
     </dependencies>
 

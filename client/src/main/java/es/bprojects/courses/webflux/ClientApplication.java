@@ -3,6 +3,7 @@ package es.bprojects.courses.webflux;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,7 @@ import reactor.blockhound.BlockHound;
  * @since 2021-05-26
  */
 @Slf4j
+@EnableEurekaClient
 @SpringBootApplication
 @RequiredArgsConstructor
 public class ClientApplication implements CommandLineRunner {

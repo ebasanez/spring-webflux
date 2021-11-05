@@ -29,11 +29,13 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
-	private final WebClient webClient;
+	private final WebClient.Builder webClient;
+
+
 
 	@Override
 	public Flux<Product> findAll() {
-		return webClient.get()
+		return webClient.build().get()
 				.accept(APPLICATION_JSON)
 				.retrieve()
 				.bodyToFlux(ProductClientDto.class)
@@ -42,7 +44,7 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public Mono<Product> findById(String id) {
-		return webClient.get()
+		return webClient.build().get()
 				.uri("/{id}", Map.of("id", id))
 				.accept(APPLICATION_JSON)
 				// You can use retrieve + bodyToMono or exchangeToMono indistinctly
@@ -53,7 +55,7 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public Mono<Product> insert(Product product) {
-		return webClient.post()
+		return webClient.build().post()
 				.accept(APPLICATION_JSON)
 				.contentType(APPLICATION_JSON)
 				.bodyValue(toDto(product))
@@ -64,7 +66,7 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public Mono<Product> update(Product product) {
-		return webClient.put()
+		return webClient.build().put()
 				.uri("/{id}", Map.of("id", product.getId()))
 				.accept(APPLICATION_JSON)
 				.contentType(APPLICATION_JSON)
@@ -76,7 +78,7 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public Mono<Void> delete(String id) {
-		return webClient.delete()
+		return webClient.build().delete()
 				.uri("/{id}", Map.of("id", id))
 				.accept(APPLICATION_JSON)
 				.retrieve()
@@ -90,7 +92,7 @@ public class ProductServiceImpl implements ProductService {
 		parts
 				.asyncPart("file", file.content(), DataBuffer.class)
 				.headers(h -> h.setContentDispositionFormData("file", file.filename()));
-		return webClient.put()
+		return webClient.build().put()
 				.uri("/{id}/photo", Map.of("id", id))
 				.contentType(MULTIPART_FORM_DATA)
 				.bodyValue(parts.build())
@@ -121,4 +123,5 @@ public class ProductServiceImpl implements ProductService {
 		dto.setCreatedAt(entity.getCreatedAt());
 		return dto;
 	}
+
 }
