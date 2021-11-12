@@ -1,0 +1,362 @@
+{
+	"info": {
+		"_postman_id": "100800a4-a48f-46fc-8fdd-24973c8b6810",
+		"name": "SpringWebflux",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "[SERVER] Upload with Photo",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/ebasanez/Desktop/myeyes.png"
+						},
+						{
+							"key": "name",
+							"value": "producto",
+							"type": "text"
+						},
+						{
+							"key": "price",
+							"value": "100",
+							"type": "text"
+						},
+						{
+							"key": "category",
+							"value": "614177e773efdd0bd4da2cec",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8080/api/v2/products",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v2",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[SERVER] Update with photo",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/ebasanez/Desktop/myeyes.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8001/api/v2/products/6184d50de0452546c416c80f/photo",
+					"host": [
+						"localhost"
+					],
+					"port": "8001",
+					"path": [
+						"api",
+						"v2",
+						"products",
+						"6184d50de0452546c416c80f",
+						"photo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\":\"cambiado2\",\r\n\"price\":100000,\r\n\"category\":\"60d17023b32bd82ea429c6f3\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/products/60f658b02599f5118b3bbea2",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"products",
+						"60f658b02599f5118b3bbea2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[CLIENT] Get product",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/ebasanez/Desktop/Mayo 2021 PUR-870.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8090/api/client/products",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"api",
+						"client",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[SERVER] Get products",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8001/api/v2/products",
+					"host": [
+						"localhost"
+					],
+					"port": "8001",
+					"path": [
+						"api",
+						"v2",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[SERVER] Create product",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"price\": 50,\r\n\"name\": \"product 1\",\r\n\"category\": \"iuuiu\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8001/api/v2/products",
+					"host": [
+						"localhost"
+					],
+					"port": "8001",
+					"path": [
+						"api",
+						"v2",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[SERVER] Delete product",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"price\": 50,\r\n\"name\": \"product 1\",\r\n\"category\": \"iuuiu\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8001/api/v2/products/6184d30126fc501cb73f5e81",
+					"host": [
+						"localhost"
+					],
+					"port": "8001",
+					"path": [
+						"api",
+						"v2",
+						"products",
+						"6184d30126fc501cb73f5e81"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[CLIENT] Delete product",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/ebasanez/Desktop/Mayo 2021 PUR-870.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8090/api/client/products",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"api",
+						"client",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[CLIENT] Upload with Photo",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/ebasanez/Desktop/myeyes.png"
+						},
+						{
+							"key": "name",
+							"value": "producto",
+							"type": "text"
+						},
+						{
+							"key": "price",
+							"value": "100",
+							"type": "text"
+						},
+						{
+							"key": "category",
+							"value": "614177e773efdd0bd4da2cec",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8090/api/client/products",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"api",
+						"client",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[SERVER] Update",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\":\"pepe\",\r\n\"price\": 100,\r\n\"category\":\"618eab7d2161f80ea9a88476\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8001/api/v2/products/6184d50de0452546c416c809",
+					"host": [
+						"localhost"
+					],
+					"port": "8001",
+					"path": [
+						"api",
+						"v2",
+						"products",
+						"6184d50de0452546c416c809"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[CLIENT] Update",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\":\"pepe\",\r\n\"price\": 100,\r\n\"category\":\"61767e31b267d6408ac2e84\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8090/api/client/products/61767e31b267d6408a4c2e8",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"api",
+						"client",
+						"products",
+						"61767e31b267d6408a4c2e8"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
